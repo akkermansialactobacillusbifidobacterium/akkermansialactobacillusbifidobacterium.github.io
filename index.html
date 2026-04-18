@@ -133,9 +133,38 @@
 
     .images-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
 
-    .img-card { border: 1px solid var(--border); background: var(--bg2); overflow: hidden; position: relative; }
-    .img-card img { width: 100%; display: block; }
+    .img-card { border: 1px solid var(--border); background: var(--bg2); overflow: hidden; position: relative; cursor: zoom-in; }
+    .img-card img { width: 100%; display: block; transition: opacity 0.2s; }
+    .img-card:hover img { opacity: 0.85; }
     .img-label { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.8); font-size: 0.55rem; letter-spacing: 0.15em; color: var(--dim); padding: 6px 10px; text-transform: uppercase; }
+
+    /* LIGHTBOX */
+    .lightbox {
+      display: none;
+      position: fixed; inset: 0; z-index: 10000;
+      background: rgba(0,0,0,0.93);
+      align-items: center; justify-content: center;
+    }
+    .lightbox.open { display: flex; animation: lbIn 0.18s ease; }
+    @keyframes lbIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .lightbox img {
+      max-width: 92vw; max-height: 92vh;
+      object-fit: contain;
+      border: 1px solid var(--border);
+      display: block;
+    }
+
+    .lightbox-close {
+      position: fixed; top: 20px; right: 24px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1.4rem; color: var(--dim);
+      cursor: pointer; line-height: 1;
+      transition: color 0.15s;
+      background: none; border: none;
+      z-index: 10001;
+    }
+    .lightbox-close:hover { color: var(--accent2); }
 
     .error-msg { font-size: 0.7rem; color: var(--accent2); letter-spacing: 0.08em; padding: 14px 0; display: none; }
     .error-msg.visible { display: block; }
@@ -199,6 +228,11 @@
       <div class="images-grid" id="imagesGrid"></div>
     </div>
   </main>
+
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightboxClose">✕</button>
+    <img id="lightboxImg" src="" alt="" />
+  </div>
 
   <footer>
     <span>AES-256-CBC // SHA-256 KEY DERIVATION</span>
@@ -380,6 +414,7 @@
         const card = document.createElement('div');
         card.className = 'img-card';
         card.innerHTML = `<img src="${url}" alt="${name}" /><div class="img-label">${name}</div>`;
+        card.addEventListener('click', () => openLightbox(url));
         imagesGrid.appendChild(card);
         decoded++;
 
@@ -433,6 +468,26 @@
   }
 
   function tick() { return new Promise(r => setTimeout(r, 20)); }
+
+  // --- LIGHTBOX ---
+  const lightbox      = document.getElementById('lightbox');
+  const lightboxImg   = document.getElementById('lightboxImg');
+  const lightboxClose = document.getElementById('lightboxClose');
+
+  function openLightbox(src) {
+    lightboxImg.src = src;
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  lightboxClose.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 </script>
 </body>
 </html>
