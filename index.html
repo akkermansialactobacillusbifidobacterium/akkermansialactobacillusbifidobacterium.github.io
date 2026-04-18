@@ -12,482 +12,141 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0a0a0a;
-      --bg2: #111111;
-      --bg3: #1a1a1a;
-      --border: #2a2a2a;
-      --accent: #c8ff00;
+      --bg:      #0a0a0a;
+      --bg2:     #111111;
+      --border:  #2a2a2a;
+      --accent:  #c8ff00;
       --accent2: #ff4d00;
-      --text: #e8e8e8;
-      --dim: #555;
-      --dim2: #333;
-      --scan: rgba(200,255,0,0.03);
+      --text:    #e8e8e8;
+      --dim:     #555;
+      --dim2:    #333;
+      --scan:    rgba(200,255,0,0.03);
     }
 
-    html, body {
-      height: 100%;
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'IBM Plex Mono', monospace;
-      overflow-x: hidden;
-    }
+    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'IBM Plex Mono', monospace; overflow-x: hidden; }
 
-    /* scanline overlay */
     body::before {
       content: '';
-      position: fixed;
-      inset: 0;
-      background: repeating-linear-gradient(
-        to bottom,
-        transparent 0px,
-        transparent 3px,
-        var(--scan) 3px,
-        var(--scan) 4px
-      );
-      pointer-events: none;
-      z-index: 9999;
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, var(--scan) 3px, var(--scan) 4px);
+      pointer-events: none; z-index: 9999;
     }
 
-    /* noise */
-    body::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 9998;
-      opacity: 0.4;
-    }
+    .container { min-height: 100vh; display: grid; grid-template-rows: auto 1fr auto; max-width: 860px; margin: 0 auto; padding: 0 24px; }
 
-    .container {
-      min-height: 100vh;
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
-
-    /* HEADER */
     header {
       border-bottom: 1px solid var(--border);
       padding: 28px 0 20px;
-      display: flex;
-      align-items: flex-end;
-      gap: 20px;
+      display: flex; align-items: flex-end; gap: 20px;
     }
 
     .logo {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 3.2rem;
-      letter-spacing: 0.12em;
-      color: var(--accent);
-      line-height: 1;
+      font-size: 3.2rem; letter-spacing: 0.12em;
+      color: var(--accent); line-height: 1;
       text-shadow: 0 0 40px rgba(200,255,0,0.3);
-    }
-
-    .logo span {
-      color: var(--accent2);
-    }
-
-    .tagline {
-      font-size: 0.65rem;
-      color: var(--dim);
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      padding-bottom: 6px;
-    }
-
-    /* MAIN */
-    main {
-      padding: 48px 0 64px;
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-    }
-
-    .status-bar {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 0.7rem;
-      color: var(--dim);
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-    }
-
-    .status-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--dim2);
-      transition: background 0.3s;
-    }
-    .status-dot.active { background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: pulse 2s infinite; }
-    .status-dot.error { background: var(--accent2); box-shadow: 0 0 8px var(--accent2); }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
-    }
-
-    /* FORM */
-    .form-block {
-      display: flex;
-      flex-direction: column;
-      gap: 28px;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
       position: relative;
     }
+    .logo span { color: var(--accent2); }
 
-    .field-label {
-      font-size: 0.65rem;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--accent);
-      font-weight: 700;
-    }
-
-    .field-label::before {
-      content: '// ';
-      color: var(--dim);
-    }
-
-    .field-input {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 1.1rem;
-      padding: 14px 18px;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      letter-spacing: 0.04em;
-      caret-color: var(--accent);
-    }
-
-    .field-input::placeholder { color: var(--dim); }
-
-    .field-input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px var(--accent), inset 0 0 20px rgba(200,255,0,0.03);
-    }
-
-    .field-input.valid {
-      border-color: var(--accent);
-    }
-
-    .field-hint {
-      font-size: 0.6rem;
-      color: var(--dim);
-      letter-spacing: 0.1em;
-    }
-
-    /* normalized preview */
-    .normalized {
-      font-size: 0.65rem;
-      color: var(--dim);
-      letter-spacing: 0.08em;
-      height: 16px;
-      transition: color 0.2s;
-    }
-    .normalized.has-value { color: #556633; }
-    .normalized span { color: var(--accent); opacity: 0.7; }
-
-    /* DECODE BUTTON */
-    .decode-btn {
-      background: transparent;
-      border: 1px solid var(--accent);
-      color: var(--accent);
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.4rem;
-      letter-spacing: 0.25em;
-      padding: 18px 40px;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      transition: color 0.2s;
-      align-self: flex-start;
-      margin-top: 8px;
-    }
-
-    .decode-btn::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: var(--accent);
-      transform: translateX(-101%);
-      transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
-      z-index: 0;
-    }
-
-    .decode-btn:hover::before { transform: translateX(0); }
-    .decode-btn:hover { color: var(--bg); }
-    .decode-btn span { position: relative; z-index: 1; }
-
-    .decode-btn:disabled {
-      border-color: var(--dim2);
-      color: var(--dim2);
-      cursor: not-allowed;
-    }
-    .decode-btn:disabled::before { display: none; }
-
-    /* HASH DISPLAY */
-    .hash-section {
-      border: 1px solid var(--border);
-      background: var(--bg2);
-      padding: 20px 22px;
-      display: none;
-      flex-direction: column;
-      gap: 10px;
-      position: relative;
-    }
-
-    .hash-section.visible { display: flex; }
-
-    .hash-section::before {
-      content: 'KEY MATERIAL';
-      position: absolute;
-      top: -9px;
-      left: 16px;
-      background: var(--bg2);
-      padding: 0 8px;
-      font-size: 0.6rem;
-      letter-spacing: 0.2em;
-      color: var(--dim);
-    }
-
-    .hash-row {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .hash-key {
-      font-size: 0.58rem;
-      letter-spacing: 0.2em;
-      color: var(--dim);
-      text-transform: uppercase;
-    }
-
-    .hash-val {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.78rem;
-      color: var(--accent);
-      word-break: break-all;
-      letter-spacing: 0.06em;
-    }
-
-    .hash-val.wrong { color: var(--accent2); }
-
-    .verdict {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 6px;
-      padding-top: 14px;
-      border-top: 1px solid var(--border);
-      font-size: 0.72rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-
-    .verdict-icon {
-      width: 20px; height: 20px;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.7rem;
-      flex-shrink: 0;
-    }
-
-    .verdict.ok .verdict-icon { background: var(--accent); color: var(--bg); }
-    .verdict.ok .verdict-text { color: var(--accent); }
-    .verdict.fail .verdict-icon { background: var(--accent2); color: var(--bg); }
-    .verdict.fail .verdict-text { color: var(--accent2); }
-
-    /* IMAGES OUTPUT */
-    .images-section {
-      display: none;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .images-section.visible { display: flex; }
-
-    .images-header {
-      font-size: 0.65rem;
-      letter-spacing: 0.2em;
-      color: var(--dim);
-      text-transform: uppercase;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 12px;
-    }
-
-    .images-header span { color: var(--accent); }
-
-    .images-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 12px;
-    }
-
-    .img-card {
-      border: 1px solid var(--border);
-      background: var(--bg2);
-      overflow: hidden;
-      position: relative;
-    }
-
-    .img-card img {
-      width: 100%;
-      display: block;
-    }
-
-    .img-label {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      background: rgba(0,0,0,0.8);
-      font-size: 0.55rem;
-      letter-spacing: 0.15em;
-      color: var(--dim);
-      padding: 6px 10px;
-      text-transform: uppercase;
-    }
-
-    .error-msg {
-      font-size: 0.7rem;
-      color: var(--accent2);
-      letter-spacing: 0.08em;
-      padding: 14px 0;
-      display: none;
-    }
-    .error-msg.visible { display: block; }
-
-    /* DROP ZONE */
-    .drop-zone {
-      border: 1px dashed var(--dim2);
-      padding: 36px;
-      text-align: center;
-      cursor: pointer;
-      transition: border-color 0.2s;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .drop-zone:hover, .drop-zone.drag-over {
-      border-color: var(--accent);
-      background: rgba(200,255,0,0.02);
-    }
-
-    .drop-zone input[type=file] { display: none; }
-
-    .drop-icon {
-      font-size: 2rem;
-      color: var(--dim2);
-    }
-
-    .drop-text {
-      font-size: 0.68rem;
-      letter-spacing: 0.15em;
-      color: var(--dim);
-      text-transform: uppercase;
-    }
-
-    .drop-sub {
-      font-size: 0.58rem;
-      color: var(--dim2);
-      letter-spacing: 0.08em;
-    }
-
-    .drop-zone-label {
-      font-size: 0.65rem;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--accent);
-      font-weight: 700;
-      margin-bottom: -12px;
-    }
-    .drop-zone-label::before { content: '// '; color: var(--dim); }
-
-    .file-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .file-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 0.62rem;
-      letter-spacing: 0.08em;
-      color: var(--dim);
-      border: 1px solid var(--border);
-      padding: 8px 12px;
-      background: var(--bg2);
-    }
-
-    .file-item-name { flex: 1; color: var(--text); }
-    .file-item-size { color: var(--dim); }
-    .file-item-remove {
-      cursor: pointer;
-      color: var(--accent2);
-      font-size: 0.8rem;
-      line-height: 1;
-      transition: opacity 0.2s;
-    }
-    .file-item-remove:hover { opacity: 0.6; }
-
-    /* footer */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 16px 0;
-      font-size: 0.58rem;
-      color: var(--dim2);
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    /* glitch anim on logo */
     @keyframes glitch {
-      0% { clip-path: inset(0 0 95% 0); transform: translate(-4px,0); }
-      20% { clip-path: inset(50% 0 30% 0); transform: translate(4px,0); }
-      40% { clip-path: inset(20% 0 60% 0); transform: translate(-2px,0); }
-      60% { clip-path: inset(80% 0 5% 0); transform: translate(3px,0); }
-      80% { clip-path: inset(10% 0 85% 0); transform: translate(-3px,0); }
+      0%   { clip-path: inset(0 0 95% 0); transform: translate(-4px,0); }
+      20%  { clip-path: inset(50% 0 30% 0); transform: translate(4px,0); }
+      40%  { clip-path: inset(20% 0 60% 0); transform: translate(-2px,0); }
+      60%  { clip-path: inset(80% 0 5% 0); transform: translate(3px,0); }
+      80%  { clip-path: inset(10% 0 85% 0); transform: translate(-3px,0); }
       100% { clip-path: inset(0 0 95% 0); transform: translate(0,0); }
     }
-
     .logo::after {
       content: attr(data-text);
-      position: absolute;
-      left: 0; top: 0;
+      position: absolute; left: 0; top: 0;
       color: var(--accent2);
       animation: glitch 6s infinite steps(1);
       opacity: 0.6;
     }
 
-    .logo { position: relative; }
+    .tagline { font-size: 0.65rem; color: var(--dim); letter-spacing: 0.2em; text-transform: uppercase; padding-bottom: 6px; }
 
-    /* loading spinner */
-    .spinner {
-      display: inline-block;
-      width: 12px; height: 12px;
-      border: 2px solid var(--dim2);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      margin-right: 8px;
-      vertical-align: middle;
+    main { padding: 48px 0 64px; display: flex; flex-direction: column; gap: 40px; }
+
+    .status-bar { display: flex; align-items: center; gap: 10px; font-size: 0.7rem; color: var(--dim); letter-spacing: 0.15em; text-transform: uppercase; }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--dim2); transition: background 0.3s; }
+    .status-dot.active { background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: pulse 2s infinite; }
+    .status-dot.error  { background: var(--accent2); box-shadow: 0 0 8px var(--accent2); }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    .form-block { display: flex; flex-direction: column; gap: 28px; }
+
+    .field { display: flex; flex-direction: column; gap: 8px; }
+    .field-label { font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+    .field-label::before { content: '// '; color: var(--dim); }
+    .field-hint { font-size: 0.6rem; color: var(--dim); letter-spacing: 0.1em; }
+
+    .field-input {
+      background: var(--bg2); border: 1px solid var(--border);
+      color: var(--text); font-family: 'IBM Plex Mono', monospace;
+      font-size: 1.1rem; padding: 14px 18px; outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      letter-spacing: 0.04em; caret-color: var(--accent);
     }
+    .field-input::placeholder { color: var(--dim); }
+    .field-input:focus { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), inset 0 0 20px rgba(200,255,0,0.03); }
+
+    .normalized { font-size: 0.65rem; color: var(--dim); letter-spacing: 0.08em; height: 16px; transition: color 0.2s; }
+    .normalized.has-value { color: #556633; }
+    .normalized span { color: var(--accent); opacity: 0.7; }
+
+    .decode-btn {
+      background: transparent; border: 1px solid var(--accent);
+      color: var(--accent); font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem; letter-spacing: 0.25em; padding: 18px 40px;
+      cursor: pointer; position: relative; overflow: hidden;
+      transition: color 0.2s; align-self: flex-start; margin-top: 8px;
+    }
+    .decode-btn::before {
+      content: ''; position: absolute; inset: 0;
+      background: var(--accent); transform: translateX(-101%);
+      transition: transform 0.25s cubic-bezier(0.4,0,0.2,1); z-index: 0;
+    }
+    .decode-btn:hover::before { transform: translateX(0); }
+    .decode-btn:hover { color: var(--bg); }
+    .decode-btn span { position: relative; z-index: 1; }
+    .decode-btn:disabled { border-color: var(--dim2); color: var(--dim2); cursor: not-allowed; }
+    .decode-btn:disabled::before { display: none; }
+
+    .verdict {
+      display: flex; align-items: center; gap: 10px;
+      margin-top: 6px; padding-top: 14px; border-top: 1px solid var(--border);
+      font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
+    }
+    .verdict-icon { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; flex-shrink: 0; }
+    .verdict.ok   .verdict-icon { background: var(--accent);  color: var(--bg); }
+    .verdict.ok   .verdict-text { color: var(--accent); }
+    .verdict.fail .verdict-icon { background: var(--accent2); color: var(--bg); }
+    .verdict.fail .verdict-text { color: var(--accent2); }
+
+    .images-section { display: none; flex-direction: column; gap: 16px; }
+    .images-section.visible { display: flex; }
+
+    .images-header { font-size: 0.65rem; letter-spacing: 0.2em; color: var(--dim); text-transform: uppercase; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+    .images-header span { color: var(--accent); }
+
+    .images-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+
+    .img-card { border: 1px solid var(--border); background: var(--bg2); overflow: hidden; position: relative; }
+    .img-card img { width: 100%; display: block; }
+    .img-label { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.8); font-size: 0.55rem; letter-spacing: 0.15em; color: var(--dim); padding: 6px 10px; text-transform: uppercase; }
+
+    .error-msg { font-size: 0.7rem; color: var(--accent2); letter-spacing: 0.08em; padding: 14px 0; display: none; }
+    .error-msg.visible { display: block; }
+
+    .progress-bar { height: 2px; background: var(--dim2); margin-top: -32px; display: none; }
+    .progress-bar.visible { display: block; }
+    .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s; }
+
+    footer { border-top: 1px solid var(--border); padding: 16px 0; font-size: 0.58rem; color: var(--dim2); letter-spacing: 0.15em; text-transform: uppercase; display: flex; justify-content: space-between; }
+
+    .spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid var(--dim2); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 8px; vertical-align: middle; }
     @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
@@ -518,42 +177,25 @@
         <div class="field-hint">prefiks "00" zostanie automatycznie usunięty</div>
       </div>
 
-      <div class="field">
-        <div class="drop-zone-label">ZASZYFROWANE PLIKI</div>
-        <div class="drop-zone" id="dropZone">
-          <input type="file" id="fileInput" accept=".enc,.bin,image/*" multiple />
-          <div class="drop-icon">⬡</div>
-          <div class="drop-text">upuść pliki tutaj lub kliknij</div>
-          <div class="drop-sub">.enc / zaszyfrowane obrazy AES-256</div>
-        </div>
-        <div class="file-list" id="fileList"></div>
-      </div>
-
       <button class="decode-btn" id="decodeBtn" disabled>
         <span>⬡ DESZYFRUJ</span>
       </button>
     </div>
 
-    <div class="hash-section" id="hashSection">
-      <div class="hash-row">
-        <div class="hash-key">input normalized</div>
-        <div class="hash-val" id="hashNormalized"></div>
-      </div>
-      <div class="hash-row">
-        <div class="hash-key">SHA-256 key</div>
-        <div class="hash-val" id="hashValue"></div>
-      </div>
-      <div class="verdict" id="verdict">
-        <div class="verdict-icon" id="verdictIcon"></div>
-        <div class="verdict-text" id="verdictText"></div>
-      </div>
+    <div class="progress-bar" id="progressBar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div class="verdict" id="verdict" style="display:none">
+      <div class="verdict-icon" id="verdictIcon"></div>
+      <div class="verdict-text" id="verdictText"></div>
     </div>
 
     <div class="error-msg" id="errorMsg"></div>
 
     <div class="images-section" id="imagesSection">
       <div class="images-header">
-        ODSZYFROWANE OBRAZY — <span id="imgCount">0</span> plik(ów)
+        ODSZYFROWANE OBRAZY — <span id="imgCount">0</span> / 3
       </div>
       <div class="images-grid" id="imagesGrid"></div>
     </div>
@@ -561,61 +203,58 @@
 
   <footer>
     <span>AES-256-CBC // SHA-256 KEY DERIVATION</span>
-    <span id="footerHash"></span>
+    <span>OSINT1 // geocaching</span>
   </footer>
 </div>
 
 <script>
-  // Validation: decrypt a known ciphertext and check plaintext — key never stored
+  // --- KEY VALIDATION ---
+  // Validation via known ciphertext — key is never stored in source
   const CHECK_IV = CryptoJS.enc.Hex.parse('cafebabe00000000cafebabe00000000');
   const CHECK_CT = CryptoJS.enc.Hex.parse('ff251400be664ddd2db7cd6f2ba2f90c');
   const CHECK_PT = 'OSINT1_CHECK_OK!';
 
-  function isKeyCorrect(hexKey) {
+  function isKeyCorrect(keyWords) {
     try {
-      const k = CryptoJS.enc.Hex.parse(hexKey);
       const dec = CryptoJS.AES.decrypt(
         { ciphertext: CHECK_CT },
-        k,
+        keyWords,
         { iv: CHECK_IV, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.NoPadding }
       );
       return dec.toString(CryptoJS.enc.Utf8) === CHECK_PT;
     } catch { return false; }
   }
 
-  const inputNazwa = document.getElementById('inputNazwa');
-  const inputNumer = document.getElementById('inputNumer');
-  const normNazwa  = document.getElementById('normNazwa');
-  const normNumer  = document.getElementById('normNumer');
-  const decodeBtn  = document.getElementById('decodeBtn');
-  const hashSection = document.getElementById('hashSection');
-  const hashNorm   = document.getElementById('hashNormalized');
-  const hashValue  = document.getElementById('hashValue');
-  const verdict    = document.getElementById('verdict');
-  const verdictIcon = document.getElementById('verdictIcon');
-  const verdictText = document.getElementById('verdictText');
-  const statusDot  = document.getElementById('statusDot');
-  const statusText = document.getElementById('statusText');
-  const errorMsg   = document.getElementById('errorMsg');
-  const imagesSection = document.getElementById('imagesSection');
-  const imagesGrid = document.getElementById('imagesGrid');
-  const imgCount   = document.getElementById('imgCount');
-  const dropZone   = document.getElementById('dropZone');
-  const fileInput  = document.getElementById('fileInput');
-  const fileList   = document.getElementById('fileList');
-  const footerHash = document.getElementById('footerHash');
+  // --- ENCRYPTED FILES (served from same directory) ---
+  const ENC_FILES = [
+    { name: 'AB', path: 'AB.enc' },
+    { name: 'C',  path: 'C.enc'  },
+    { name: 'D',  path: 'D.enc'  },
+  ];
 
-  let encryptedFiles = [];
+  // --- DOM ---
+  const inputNazwa   = document.getElementById('inputNazwa');
+  const inputNumer   = document.getElementById('inputNumer');
+  const normNazwa    = document.getElementById('normNazwa');
+  const normNumer    = document.getElementById('normNumer');
+  const decodeBtn    = document.getElementById('decodeBtn');
+  const verdict      = document.getElementById('verdict');
+  const verdictIcon  = document.getElementById('verdictIcon');
+  const verdictText  = document.getElementById('verdictText');
+  const statusDot    = document.getElementById('statusDot');
+  const statusText   = document.getElementById('statusText');
+  const errorMsg     = document.getElementById('errorMsg');
+  const imagesSection = document.getElementById('imagesSection');
+  const imagesGrid   = document.getElementById('imagesGrid');
+  const imgCount     = document.getElementById('imgCount');
+  const progressBar  = document.getElementById('progressBar');
+  const progressFill = document.getElementById('progressFill');
 
   // --- NORMALIZE ---
   function normalize(nazwa, numer) {
     const n = nazwa.toLowerCase().replace(/\s+/g, '');
     const m = numer.replace(/\s+/g, '').replace(/^00+/, '');
-    return { n, m, combined: n + m };
-  }
-
-  function computeKey(combined) {
-    return CryptoJS.SHA256(combined).toString(CryptoJS.enc.Hex);
+    return n + m;
   }
 
   // --- LIVE PREVIEW ---
@@ -624,27 +263,24 @@
     const mRaw = inputNumer.value;
 
     if (nRaw) {
-      const nNorm = nRaw.toLowerCase().replace(/\s+/g, '');
       normNazwa.className = 'normalized has-value';
-      normNazwa.innerHTML = '→ <span>' + nNorm + '</span>';
+      normNazwa.innerHTML = '→ <span>' + nRaw.toLowerCase().replace(/\s+/g, '') + '</span>';
     } else {
       normNazwa.className = 'normalized';
       normNazwa.innerHTML = '';
     }
 
     if (mRaw) {
-      const mNorm = mRaw.replace(/\s+/g, '').replace(/^00+/, '');
       normNumer.className = 'normalized has-value';
-      normNumer.innerHTML = '→ <span>' + mNorm + '</span>';
+      normNumer.innerHTML = '→ <span>' + mRaw.replace(/\s+/g, '').replace(/^00+/, '') + '</span>';
     } else {
       normNumer.className = 'normalized';
       normNumer.innerHTML = '';
     }
 
-    const hasInput = nRaw.trim() !== '' && mRaw.trim() !== '';
-    decodeBtn.disabled = !hasInput;
-
-    if (hasInput) {
+    const ready = nRaw.trim() !== '' && mRaw.trim() !== '';
+    decodeBtn.disabled = !ready;
+    if (ready) {
       statusDot.className = 'status-dot active';
       statusText.textContent = 'dane wejściowe gotowe — kliknij DESZYFRUJ';
     } else {
@@ -656,185 +292,128 @@
   inputNazwa.addEventListener('input', updatePreviews);
   inputNumer.addEventListener('input', updatePreviews);
 
-  // --- FILE DROP ---
-  dropZone.addEventListener('click', () => fileInput.click());
-
-  dropZone.addEventListener('dragover', e => {
-    e.preventDefault();
-    dropZone.classList.add('drag-over');
-  });
-
-  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-
-  dropZone.addEventListener('drop', e => {
-    e.preventDefault();
-    dropZone.classList.remove('drag-over');
-    addFiles(Array.from(e.dataTransfer.files));
-  });
-
-  fileInput.addEventListener('change', () => {
-    addFiles(Array.from(fileInput.files));
-    fileInput.value = '';
-  });
-
-  function addFiles(files) {
-    files.forEach(f => {
-      if (!encryptedFiles.find(x => x.name === f.name && x.size === f.size)) {
-        encryptedFiles.push(f);
-      }
-    });
-    renderFileList();
-  }
-
-  function renderFileList() {
-    fileList.innerHTML = '';
-    encryptedFiles.forEach((f, i) => {
-      const div = document.createElement('div');
-      div.className = 'file-item';
-      div.innerHTML = `<span class="file-item-name">${escHtml(f.name)}</span>
-        <span class="file-item-size">${(f.size/1024).toFixed(1)}KB</span>
-        <span class="file-item-remove" data-idx="${i}">✕</span>`;
-      fileList.appendChild(div);
-    });
-
-    fileList.querySelectorAll('.file-item-remove').forEach(btn => {
-      btn.addEventListener('click', () => {
-        encryptedFiles.splice(parseInt(btn.dataset.idx), 1);
-        renderFileList();
-      });
-    });
-  }
-
-  function escHtml(s) {
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-
   // --- DECODE ---
   decodeBtn.addEventListener('click', async () => {
-    const nRaw = inputNazwa.value;
-    const mRaw = inputNumer.value;
-    if (!nRaw.trim() || !mRaw.trim()) return;
+    const nRaw = inputNazwa.value.trim();
+    const mRaw = inputNumer.value.trim();
+    if (!nRaw || !mRaw) return;
 
+    // reset UI
     decodeBtn.disabled = true;
     decodeBtn.querySelector('span').innerHTML = '<span class="spinner"></span>DESZYFRUJE...';
-    statusDot.className = 'status-dot active';
-    statusText.textContent = 'obliczanie klucza...';
     errorMsg.classList.remove('visible');
     imagesSection.classList.remove('visible');
     imagesGrid.innerHTML = '';
+    verdict.style.display = 'none';
+    progressBar.classList.remove('visible');
+    progressFill.style.width = '0%';
 
-    await new Promise(r => setTimeout(r, 60));
+    statusDot.className = 'status-dot active';
+    statusText.textContent = 'obliczanie klucza...';
+    await tick();
 
-    const { n, m, combined } = normalize(nRaw, mRaw);
-    const key = computeKey(combined);
+    // derive key
+    const combined = normalize(nRaw, mRaw);
+    const keyWords = CryptoJS.SHA256(combined);
 
-    hashNorm.textContent = combined;
-    hashValue.textContent = key;
-    hashValue.className = key === CORRECT_KEY ? 'hash-val' : 'hash-val wrong';
-    hashSection.classList.add('visible');
-    footerHash.textContent = key.slice(0,16) + '...';
-
-    const isCorrect = isKeyCorrect(key);
-    verdict.className = 'verdict ' + (isCorrect ? 'ok' : 'fail');
-    verdictIcon.textContent = isCorrect ? '✓' : '✕';
-    verdictText.textContent = isCorrect
-      ? 'klucz prawidłowy — deszyfrowanie możliwe'
+    // validate
+    const valid = isKeyCorrect(keyWords);
+    verdict.style.display = 'flex';
+    verdict.className = 'verdict ' + (valid ? 'ok' : 'fail');
+    verdictIcon.textContent = valid ? '✓' : '✕';
+    verdictText.textContent = valid
+      ? 'klucz prawidłowy — ładowanie obrazów...'
       : 'klucz nieprawidłowy — sprawdź dane wejściowe';
 
-    if (encryptedFiles.length === 0) {
-      // no files — just show key info
-      statusDot.className = isCorrect ? 'status-dot active' : 'status-dot error';
-      statusText.textContent = isCorrect ? 'klucz gotowy — dodaj pliki do deszyfrowania' : 'nieprawidłowy klucz';
-    } else {
-      statusText.textContent = 'deszyfrowanie ' + encryptedFiles.length + ' pliku(ów)...';
-      await decryptFiles(key);
+    if (!valid) {
+      statusDot.className = 'status-dot error';
+      statusText.textContent = 'nieprawidłowy klucz';
+      decodeBtn.disabled = false;
+      decodeBtn.querySelector('span').textContent = '⬡ DESZYFRUJ';
+      return;
     }
 
-    decodeBtn.disabled = false;
-    decodeBtn.querySelector('span').textContent = '⬡ DESZYFRUJ';
-  });
+    // decrypt files
+    progressBar.classList.add('visible');
+    statusText.textContent = 'deszyfrowanie plików...';
 
-  async function decryptFiles(hexKey) {
-    const keyBytes = CryptoJS.enc.Hex.parse(hexKey);
     let decoded = 0;
-    let errors = 0;
+    let errors  = 0;
 
-    for (const file of encryptedFiles) {
+    for (let i = 0; i < ENC_FILES.length; i++) {
+      const { name, path } = ENC_FILES[i];
+      progressFill.style.width = Math.round((i / ENC_FILES.length) * 100) + '%';
+      await tick();
+
       try {
-        const buf = await file.arrayBuffer();
+        const resp = await fetch(path);
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+
+        const buf   = await resp.arrayBuffer();
         const bytes = new Uint8Array(buf);
 
-        // Try to detect format:
-        // Format A: raw AES-CBC — first 16 bytes = IV, rest = ciphertext
-        // Format B: CryptoJS format — starts with "Salted__" (OpenSSL)
-        // Format C: plain image (for testing)
+        // format: [16 bytes IV][ciphertext...]
+        const iv         = CryptoJS.lib.WordArray.create(bytes.slice(0, 16));
+        const ciphertext = CryptoJS.lib.WordArray.create(bytes.slice(16));
 
-        let imgUrl = null;
+        const decrypted = CryptoJS.AES.decrypt(
+          { ciphertext },
+          keyWords,
+          { iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 }
+        );
 
-        // Check if it's actually a plain image already
-        const magic = bytes.slice(0,4);
-        if (
-          (magic[0]===0xFF && magic[1]===0xD8) || // JPEG
-          (magic[0]===0x89 && magic[1]===0x50 && magic[2]===0x4E && magic[3]===0x47) || // PNG
-          (magic[0]===0x47 && magic[1]===0x49) // GIF
-        ) {
-          const blob = new Blob([buf], { type: 'image/*' });
-          imgUrl = URL.createObjectURL(blob);
-        } else {
-          // Attempt AES-CBC decrypt (IV = first 16 bytes)
-          const iv = CryptoJS.lib.WordArray.create(bytes.slice(0, 16));
-          const ciphertext = CryptoJS.lib.WordArray.create(bytes.slice(16));
+        const decBytes = wordArrayToUint8Array(decrypted);
 
-          const decrypted = CryptoJS.AES.decrypt(
-            { ciphertext },
-            keyBytes,
-            { iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 }
-          );
+        // detect mime
+        let mime = 'image/jpeg';
+        if (decBytes[0] === 0x89 && decBytes[1] === 0x50) mime = 'image/png';
+        else if (decBytes[0] === 0x47 && decBytes[1] === 0x49) mime = 'image/gif';
 
-          const decBytes = wordArrayToUint8Array(decrypted);
-
-          // Detect mime from decrypted bytes
-          let mime = 'image/jpeg';
-          if (decBytes[0]===0x89) mime = 'image/png';
-          else if (decBytes[0]===0x47) mime = 'image/gif';
-          else if (decBytes[0]===0x42 && decBytes[1]===0x4D) mime = 'image/bmp';
-
-          const blob = new Blob([decBytes], { type: mime });
-          imgUrl = URL.createObjectURL(blob);
-        }
+        const blob = new Blob([decBytes], { type: mime });
+        const url  = URL.createObjectURL(blob);
 
         const card = document.createElement('div');
         card.className = 'img-card';
-        card.innerHTML = `<img src="${imgUrl}" alt="${escHtml(file.name)}" />
-          <div class="img-label">${escHtml(file.name)}</div>`;
+        card.innerHTML = `<img src="${url}" alt="${name}" /><div class="img-label">${name}</div>`;
         imagesGrid.appendChild(card);
         decoded++;
 
       } catch (e) {
         errors++;
+        console.error(name, e);
       }
     }
+
+    progressFill.style.width = '100%';
+    await tick();
+    progressBar.classList.remove('visible');
 
     imgCount.textContent = decoded;
     imagesSection.classList.add('visible');
 
     if (errors > 0) {
-      showError(`${errors} plik(i) nie mogły zostać odszyfrowane. Sprawdź format lub klucz.`);
+      showError(`${errors} plik(i) nie mogły zostać odszyfrowane.`);
     }
+
+    verdictText.textContent = decoded > 0
+      ? `klucz prawidłowy — odszyfrowano ${decoded} / ${ENC_FILES.length} obrazów`
+      : 'błąd deszyfrowania';
 
     statusDot.className = decoded > 0 ? 'status-dot active' : 'status-dot error';
     statusText.textContent = decoded > 0
-      ? `odszyfrowano ${decoded} z ${encryptedFiles.length} pliku(ów)`
-      : 'błąd deszyfrowania — sprawdź klucz lub format pliku';
-  }
+      ? `odszyfrowano ${decoded} z ${ENC_FILES.length} obrazów`
+      : 'błąd — sprawdź klucz lub pliki';
 
-  function wordArrayToUint8Array(wordArray) {
-    const words = wordArray.words;
-    const sigBytes = wordArray.sigBytes;
-    const u8 = new Uint8Array(sigBytes);
-    for (let i = 0; i < sigBytes; i++) {
+    decodeBtn.disabled = false;
+    decodeBtn.querySelector('span').textContent = '⬡ DESZYFRUJ';
+  });
+
+  // --- HELPERS ---
+  function wordArrayToUint8Array(wa) {
+    const words = wa.words, len = wa.sigBytes;
+    const u8 = new Uint8Array(len);
+    for (let i = 0; i < len; i++)
       u8[i] = (words[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
-    }
     return u8;
   }
 
@@ -842,6 +421,8 @@
     errorMsg.textContent = msg;
     errorMsg.classList.add('visible');
   }
+
+  function tick() { return new Promise(r => setTimeout(r, 20)); }
 </script>
 </body>
 </html>
