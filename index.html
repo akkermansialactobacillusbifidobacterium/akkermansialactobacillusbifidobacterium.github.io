@@ -352,14 +352,20 @@
         const bytes = new Uint8Array(buf);
 
         // format: [16 bytes IV][ciphertext...]
-        const iv         = CryptoJS.lib.WordArray.create(bytes.slice(0, 16));
-        const ciphertext = CryptoJS.lib.WordArray.create(bytes.slice(16));
+        // convert via hex to avoid CryptoJS TypedArray quirks
+        const ivHex = u8toHex(bytes.slice(0, 16));
+        const ctHex = u8toHex(bytes.slice(16));
+
+        const iv         = CryptoJS.enc.Hex.parse(ivHex);
+        const ciphertext = CryptoJS.enc.Hex.parse(ctHex);
 
         const decrypted = CryptoJS.AES.decrypt(
           { ciphertext },
           keyWords,
           { iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 }
         );
+
+        if (!decrypted || decrypted.sigBytes <= 0) throw new Error('decrypt returned empty');
 
         const decBytes = wordArrayToUint8Array(decrypted);
 
@@ -380,6 +386,7 @@
       } catch (e) {
         errors++;
         console.error(name, e);
+        showError(`Błąd [${name}]: ${e.message}`);
       }
     }
 
@@ -408,6 +415,10 @@
   });
 
   // --- HELPERS ---
+  function u8toHex(u8) {
+    return Array.from(u8).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
   function wordArrayToUint8Array(wa) {
     const words = wa.words, len = wa.sigBytes;
     const u8 = new Uint8Array(len);
