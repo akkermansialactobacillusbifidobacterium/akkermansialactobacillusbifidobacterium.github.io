@@ -566,7 +566,22 @@
 </div>
 
 <script>
-  const CORRECT_KEY = 'REMOVED_FROM_HISTORY';
+  // Validation: decrypt a known ciphertext and check plaintext — key never stored
+  const CHECK_IV = CryptoJS.enc.Hex.parse('cafebabe00000000cafebabe00000000');
+  const CHECK_CT = CryptoJS.enc.Hex.parse('ff251400be664ddd2db7cd6f2ba2f90c');
+  const CHECK_PT = 'OSINT1_CHECK_OK!';
+
+  function isKeyCorrect(hexKey) {
+    try {
+      const k = CryptoJS.enc.Hex.parse(hexKey);
+      const dec = CryptoJS.AES.decrypt(
+        { ciphertext: CHECK_CT },
+        k,
+        { iv: CHECK_IV, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.NoPadding }
+      );
+      return dec.toString(CryptoJS.enc.Utf8) === CHECK_PT;
+    } catch { return false; }
+  }
 
   const inputNazwa = document.getElementById('inputNazwa');
   const inputNumer = document.getElementById('inputNumer');
@@ -719,7 +734,7 @@
     hashSection.classList.add('visible');
     footerHash.textContent = key.slice(0,16) + '...';
 
-    const isCorrect = key === CORRECT_KEY;
+    const isCorrect = isKeyCorrect(key);
     verdict.className = 'verdict ' + (isCorrect ? 'ok' : 'fail');
     verdictIcon.textContent = isCorrect ? '✓' : '✕';
     verdictText.textContent = isCorrect
